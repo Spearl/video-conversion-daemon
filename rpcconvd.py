@@ -1,12 +1,13 @@
 #!/usr/bin/python
-from subprocess import call
+from subprocess import call, STDOUT
+from socket import create_connection
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 #from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
 def conversion(infile, outfile, addr):
-	print addr
+	sock = create_connection(addr)
 	cmdline = ["avconv", "-i", infile, "-codec", "copy", outfile]
-	ret = call(cmdline)
+	ret = call(cmdline, stderr=STDOUT, stdout=sock)
 	if ret:
 		return "Failure!"
 	else:
