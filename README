@@ -1,0 +1,8 @@
+Video Conversion Daemon
+Written by Landon Spear (spearl@colorado.edu)
+
+This project consists of two parts: a daemon and a client.
+
+The daemon listens for an XML RPC on port 8080 with the in and out filenames to be given to avconv.
+
+The client is ment to be run inside a web framework and sends the RPC to the daemon, waits for the callback and prints the results.
