@@ -20,7 +20,7 @@ def convProgress(socket):
 		data = conn.recv(4096)
 		if not data: break
 		print data,
-	print "Progress thread exiting!!"
+	sys.stderr.write("Progress thread exiting!!")
 	socket.close()
 
 def createSocket():
@@ -28,21 +28,22 @@ def createSocket():
 	s.bind(('',0))
 	return (s, s.getsockname()[1])
 
-
-def main():
-	server = xmlrpclib.ServerProxy("http://localhost:8080")
+def runConversion(serverAddr, infile, outfile):
+	server = xmlrpclib.ServerProxy(serverAddr)
 	listenSocket, listenPort = createSocket()
 
 	progressListener = ListenThread(convProgress, listenSocket)
+	sys.stderr.write("Starting progress thread")
 	progressListener.start()
 	addr = (gethostname(), listenPort)
-	print server.convert(sys.argv[1], sys.argv[2], addr)
+	print server.convert(infile, outfile, addr)
 	progressListener.join()
 
-
+def main():
+	runConversion(sys.argv[1], sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__':
-	if len(sys.argv) != 3:
-		print "Fail! Give me infile and outfile!"
+	if len(sys.argv) != 4:
+		print "Fail! Give me destination address, infile path and outfile path!"
 		exit()
 	main()
